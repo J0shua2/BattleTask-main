@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "BattleTask",
+  "version": "1.0",
+  "description": "Gamify staying focused online and beat procrastination",
+  "permissions": [
+    "notifications",
+    "tabs",
+    "windows",
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; connect-src 'self' http://localhost:3000; object-src 'self'"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+} 

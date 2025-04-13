@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BattleTask</title>
+  <style>
+    :root {
+      --primary-color: #6200ee;
+      --secondary-color: #03dac6;
+      --danger-color: #ff5252;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --background-color: #121212;
+      --card-color: #1e1e1e;
+      --text-color: #ffffff;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      width: 350px;
+      min-height: 450px;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+    
+    .container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--secondary-color);
+      margin: 0;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      color: #a0a0a0;
+      margin-top: 5px;
+    }
+    
+    .time-selector {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    .time-option {
+      background-color: var(--card-color);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .time-option:hover {
+      border-color: var(--secondary-color);
+    }
+    
+    .time-option.selected {
+      background-color: var(--primary-color);
+      border-color: var(--secondary-color);
+    }
+    
+    .battle-arena {
+      width: 100%;
+      height: 220px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .monster-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: none;
+      top: -15px;
+    }
+    
+    .monster-container.active {
+      display: block;
+    }
+    
+    .monster-body {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .monster-eyes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+    
+    .monster-limbs {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .health-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .heart {
+      width: 30px;
+      height: 30px;
+      position: relative;
+      display: inline-block;
+      background-image: url('icons/heart.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .heart.lost {
+      background-image: url('icons/heart-empty.png');
+      opacity: 0.5;
+    }
+    
+    /* Remove the CSS-based heart shapes */
+    .heart:before,
+    .heart:after {
+      display: none;
+    }
+    
+    .timer {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: var(--secondary-color);
+      position: absolute;
+      bottom: 5px;
+      background-color: rgba(30, 30, 30, 0.7);
+      padding: 5px 15px;
+      border-radius: 8px;
+    }
+    
+    .start-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+    
+    .start-button:hover {
+      background-color: #7434ff;
+      transform: translateY(-2px);
+    }
+    
+    .start-button.active {
+      background-color: var(--danger-color);
+    }
+    
+    .start-button:disabled {
+      background-color: #555555;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .result-message {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    .result-message.victory {
+      color: var(--success-color);
+      display: block;
+    }
+    
+    .result-message.defeat {
+      color: var(--danger-color);
+      display: block;
+    }
+    
+    .stats {
+      width: 100%;
+      background-color: var(--card-color);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: #a0a0a0;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">BattleTask</h1>
+      <p class="subtitle">Defeat procrastination monsters with focus!</p>
+    </div>
+    
+    <div class="time-selector">
+      <div class="time-option" data-minutes="5">5 min</div>
+      <div class="time-option" data-minutes="10">10 min</div>
+      <div class="time-option" data-minutes="15">15 min</div>
+      <div class="time-option" data-minutes="20">20 min</div>
+      <div class="time-option" data-minutes="25">25 min</div>
+      <div class="time-option" data-minutes="30">30 min</div>
+      <div class="time-option" data-minutes="45">45 min</div>
+      <div class="time-option" data-minutes="60">60 min</div>
+    </div>
+    
+    <div class="battle-arena">
+      <div class="monster-container">
+        <div class="monster-body"></div>
+        <div class="monster-eyes"></div>
+        <div class="monster-limbs"></div>
+      </div>
+      <div class="timer">00:00</div>
+    </div>
+    
+    <div class="health-bar">
+      <div class="heart"></div>
+      <div class="heart"></div>
+      <div class="heart"></div>
+    </div>
+    
+    <button class="start-button">START BATTLE</button>
+    
+    <div class="result-message">Victory! You defeated the procrastination monster!</div>
+    
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label">Battles Won:</span>
+        <span class="stat-value" id="battles-won">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Total Focus Minutes:</span>
+        <span class="stat-value" id="focus-minutes">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Average Tab Score:</span>
+        <span class="stat-value" id="current-score">-</span>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
